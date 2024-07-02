@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Exports\CategorysExport;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
-use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -45,7 +47,7 @@ class CategoryController extends Controller
 
             if($request->hasFile('icon')) {
                 // ambil pathnya dan simpan dalam folder icons dan simpan secara public
-                $iconPath = $request->file('icon')->store('icons', 'public'); 
+                $iconPath = $request->file('icon')->store('icons', 'public');
                 $validated['icon'] = $iconPath; // gunakan ini agar tidak private (urlnya harus dari public)
             } else {
                 $iconPath = 'images/icon-default.png'; // default image jika tdk ada image dr user
@@ -90,7 +92,7 @@ class CategoryController extends Controller
 
             if($request->hasFile('icon')) {
                 // ambil pathnya dan simpan dalam folder icons dan simpan secara public
-                $iconPath = $request->file('icon')->store('icons', 'public'); 
+                $iconPath = $request->file('icon')->store('icons', 'public');
                 $validated['icon'] = $iconPath; // gunakan ini agar tidak private (urlnya harus dari public)
             }
 
@@ -116,10 +118,15 @@ class CategoryController extends Controller
             DB::commit(); // commit deletenya
 
             return redirect()->route('admin.categories.index');
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('admin.categories.index')->with('error', 'something error'); // balikin ke index errornya dan munculkan pesan something error
         }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new CategorysExport, 'categories.xlsx');
     }
 }

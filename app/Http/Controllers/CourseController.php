@@ -71,18 +71,18 @@ class CourseController extends Controller
             // samakan dengan input namenya yaitu "thumbnail"
             if($request->hasFile('thumbnail')) {
                 // ambil pathnya dan simpan dalam folder thumbnails dan simpan secara public
-                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public'); 
+                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
                 $validated['thumbnail'] = $thumbnailPath; // gunakan ini agar tidak private (urlnya harus dari public)
             } else {
                 $iconPath = 'images/icon-default.png'; // default image jika tdk ada image dr user
             }
 
             $validated['slug'] = Str::slug($validated['name']); // gunakan slug agar urlnya dari web design menjadi web-design (tergenerate sendiri)
-            
+
             $validated['teacher_id'] = $teacher->id; // ambil teacher_id dari Auth $teacher diatas
 
             $course = Course::create($validated); // create data terbaru dengan name, icon, dan slug
-            
+
             // cek keypoints
             if(!empty($validated['course_keypoints'])) {
                 // lakukan perulangan insert sebanyak 4x karna keypoint course ada 4
@@ -132,7 +132,7 @@ class CourseController extends Controller
             // samakan dengan input namenya yaitu "thumbnail"
             if($request->hasFile('thumbnail')) {
                 // ambil pathnya dan simpan dalam folder thumbnails dan simpan secara public
-                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public'); 
+                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
                 $validated['thumbnail'] = $thumbnailPath; // gunakan ini agar tidak private (urlnya harus dari public)
             } else {
                 $iconPath = 'images/icon-default.png'; // default image jika tdk ada image dr user
@@ -141,11 +141,11 @@ class CourseController extends Controller
             $validated['slug'] = Str::slug($validated['name']); // gunakan slug agar urlnya dari web design menjadi web-design (tergenerate sendiri)
 
             $course->update($validated);
-            
+
             // cek keypoints
             if(!empty($validated['course_keypoints'])) {
                 $course->course_keypoints()->delete(); // delete dulu keypointsnya baru deh update dgn yg baru
-                
+
                 // lakukan perulangan insert sebanyak 4x karna keypoint course ada 4
                 foreach($validated['course_keypoints'] as $keypointText) {
                     // langsung ambil dan create course_keypoints karna dia berelasi
@@ -172,7 +172,7 @@ class CourseController extends Controller
             DB::commit(); // commit deletenya
 
             return redirect()->route('admin.courses.index');
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('admin.courses.index')->with('error', 'something error'); // balikin ke index errornya dan munculkan pesan something error

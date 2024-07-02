@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('categories', CategoryController::class)->middleware('role:owner');
         Route::resource('teachers', TeacherController::class)->middleware('role:owner');
         Route::resource('courses', CourseController::class)->middleware('role:owner|teacher'); // role yg bisa akses adalah owner dan teacher
-        Route::resource('subscribe_transactions', SubscribeTransactionController::class)->middleware('role:owner'); 
+        Route::resource('subscribe_transactions', SubscribeTransactionController::class)->middleware('role:owner');
 
         // untuk memposting kelas maka harus menggunakan get dan post karna kita harus menyimpan course id. tidak bisa menggunakan resource (namun untuk delete dan edit bisa menggunakan resource yg ada di bawah)
         Route::get('add/video/{course:id}', [CourseVideoController::class, 'create'])
@@ -45,7 +45,12 @@ Route::middleware('auth')->group(function () {
         ->middleware('role:teacher|owner')
         ->name('course.add_video.save');
 
-        Route::resource('course_videos', CourseVideoController::class)->middleware('role:owner|teacher'); 
+        Route::get('/categories/export/excel', [CategoryController::class, 'exportExcel'])
+        ->middleware('role:owner')
+        ->name('categories.export_excel');
+
+        Route::resource('course_videos', CourseVideoController::class)->middleware('role:owner|teacher');
+
 
 
     });

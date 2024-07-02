@@ -37,7 +37,17 @@ class RolePermissionSeeder extends Seeder
             'password' => bcrypt('owner')
         ]);
 
+        $userTeacher = User::create([
+            // sesuaikan dengan field yg ada di DB
+            'name' => 'Ananta B P N',
+            'occupation' => 'Software Engineer',
+            'avatar' => 'images/default-avatar.png',
+            'email' => 'teach@gmail.com',
+            'password' => bcrypt('teach')
+        ]);
+
         $userOwner->assignRole($ownerRole); // assign userOwner menjadi ownerRole
+        $userTeacher->assignRole($teacherRole);
 
     }
 }
